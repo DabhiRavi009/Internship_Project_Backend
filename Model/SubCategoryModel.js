@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = new Schema();
+const Schema = mongoose.Schema;
 
 const SubCategorySchema = new Schema({
   Name: {
