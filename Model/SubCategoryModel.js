@@ -4,8 +4,11 @@ const Schema = mongoose.Schema;
 const SubCategorySchema = new Schema({
   Name: {
     type: String,
-    maxlength: 30,
     required: true,
+  },
+  category: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
   },
 });
 

@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ServiceSchema = new Schema({
-  name: {
-    type: Schema.Types.ObjectId,
-    ref: "Service_Provider",
-  },
   Service_Name: {
     type: String,
   },
@@ -32,6 +28,10 @@ const ServiceSchema = new Schema({
   },
   State: {
     type: String,
+  },
+  service_provider: {
+    type: Schema.Types.ObjectId,
+    ref: "Service_Provider",
   },
 });
 
