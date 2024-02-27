@@ -9,7 +9,7 @@ const createServiceProvider = async (req, res) => {
       Email: req.body.Email,
       Password: hashedPassword,
       Contact: req.body.Contact,
-      user: req.body.user,
+      role: req.body.role,
     };
     const savedServiceProvider = await ServiceProviderModel.create(
       serviceProviderObj
