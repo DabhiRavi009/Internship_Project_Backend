@@ -33,6 +33,9 @@ const ServiceSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Service_Provider",
   },
+  imageUrl: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Service", ServiceSchema);

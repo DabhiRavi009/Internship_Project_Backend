@@ -1,4 +1,55 @@
 const ServiceModel = require("../Model/ServiceModel");
+const multer = require("multer");
+const path = require("path");
+const cloudinaryController = require("./CloudinaryController");
+
+const storage = multer.diskStorage({
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10000000,
+  },
+}).single("myImage");
+
+const fileUpload = (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      res.status(500).json({
+        message: "Error in File Handling",
+      });
+    } else {
+      if (req.file === undefined) {
+        res.status(400).json({
+          message: "No File is Selected",
+        });
+      } else {
+        const result = await cloudinaryController.uploadImage(req.file.path);
+        const serviceObj = {
+          Service_Name: req.body.Service_Name,
+          category: req.body.category,
+          sub_category: req.body.sub_category,
+          type: req.body.type,
+          Fees: req.body.Fees,
+          Area: req.body.Area,
+          City: req.body.City,
+          State: req.body.State,
+          service_provider: req.body.service_provider,
+          imageUrl: result.secure_url,
+        };
+        const savedService = await ServiceModel.create(serviceObj);
+        res.status(200).json({
+          message: "File Uploaded",
+          data: savedService,
+        });
+      }
+    }
+  });
+};
 
 const createService = async (req, res) => {
   try {
@@ -125,4 +176,5 @@ module.exports = {
   getServiceById,
   updateService,
   deleteService,
+  fileUpload,
 };
