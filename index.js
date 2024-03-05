@@ -14,6 +14,7 @@ const serviceRoutes = require("./Routes/ServiceRoutes");
 const SubCategoryRoutes = require("./Routes/SubCategoryRoutes");
 const CategoryRoutes = require("./Routes/CategoryRoutes");
 const TypeRoutes = require("./Routes/TypesRoutes");
+const BookServiceRoutes = require("./Routes/BookRoutes");
 
 mongoose.set("strictQuery", false);
 app.use("/roles", RoleRoutes);
@@ -23,6 +24,7 @@ app.use("/services", serviceRoutes);
 app.use("/subcategorys", SubCategoryRoutes);
 app.use("/categorys", CategoryRoutes);
 app.use("/types", TypeRoutes);
+app.use("/bookservices", BookServiceRoutes);
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/internship_localservice")

@@ -1,4 +1,3 @@
-const UserModel = require("../Model/UserModel");
 const userModel = require("../Model/UserModel");
 const encrypt = require("../Utils/Encrypt");
 
@@ -31,7 +30,7 @@ const loginUser = async (req, res) => {
   try {
     const Email = req.body.Email;
     const Password = req.body.Password;
-    const userFromDb = await UserModel.findOne({
+    const userFromDb = await userModel.findOne({
       Email: Email,
     });
     if (userFromDb != null) {
@@ -67,14 +66,14 @@ const loginUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await userModel.find().populate("role");
-    res.status(201).json({
+    res.status(200).json({
       message: "Users featched",
       flag: 1,
       data: users,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Server Error",
+      message: "server error",
       flag: -1,
       data: error,
     });

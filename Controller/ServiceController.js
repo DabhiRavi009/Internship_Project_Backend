@@ -170,6 +170,35 @@ const deleteService = async (req, res) => {
   }
 };
 
+const getServiceProviderByServiceID = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const serviceproviderbyserviceid = await ServiceModel.findById(id)
+      .populate("category")
+      .populate("sub_category")
+      .populate("type")
+      .populate("service_provider");
+    if (serviceproviderbyserviceid === null) {
+      res.status(404).json({
+        message: "Service not Found",
+        flag: -1,
+      });
+    } else {
+      res.status(200).json({
+        message: "Service not Found",
+        flag: -1,
+        data: serviceproviderbyserviceid,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error",
+      flag: -1,
+      data: error,
+    });
+  }
+};
+
 module.exports = {
   createService,
   getAllServices,
@@ -177,4 +206,5 @@ module.exports = {
   updateService,
   deleteService,
   fileUpload,
+  getServiceProviderByServiceID,
 };
