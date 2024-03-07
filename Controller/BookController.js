@@ -21,8 +21,8 @@ const getAllBookService = async (req, res) => {
   try {
     const bookService = await BookServiceModel.find()
       .populate("ServiceId")
-      .populate("Service_Provider")
-      .populate("User");
+      .populate("service_provider")
+      .populate("user");
     res.status(201).json({
       message: "Boked Service featched",
       flag: 1,
@@ -42,8 +42,8 @@ const getBookServiceById = async (req, res) => {
   try {
     const bookservice = await BookServiceModel.findById(id)
       .populate("ServiceId")
-      .populate("Service_Provider")
-      .populate("User");
+      .populate("service_provider")
+      .populate("user");
     if (bookservice === null) {
       res.status(404).json({
         message: "Book Service not Found",

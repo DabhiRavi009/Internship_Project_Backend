@@ -6,15 +6,15 @@ const BookSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Service",
   },
-  Service_Provider: {
+  service_provider: {
     type: Schema.Types.ObjectId,
     ref: "Service_Provider",
   },
-  User: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  Amount: {
+  Fees: {
     type: Number,
   },
   Status: {
