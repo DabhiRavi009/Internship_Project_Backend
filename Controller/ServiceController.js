@@ -171,23 +171,20 @@ const deleteService = async (req, res) => {
 };
 
 const getServiceProviderByServiceID = async (req, res) => {
-  const id = req.params.id;
+  const serviceProviderId = req.params.id;
   try {
-    const serviceproviderbyserviceid = await ServiceModel.findById(id)
-      .populate("category")
-      .populate("sub_category")
-      .populate("type")
-      .populate("service_provider");
-    if (serviceproviderbyserviceid === null) {
-      res.status(404).json({
-        message: "Service not Found",
-        flag: -1,
+    const service = await ServiceModel.find({
+      service_provider: serviceProviderId,
+    }).populate("service_provider");
+    if (service && service.length > 0) {
+      res.status(200).json({
+        message: "Service Get Successfully",
+        flag: service,
       });
     } else {
-      res.status(200).json({
-        message: "Service not Found",
+      res.status(400).json({
+        message: "Invalid Id",
         flag: -1,
-        data: serviceproviderbyserviceid,
       });
     }
   } catch (error) {
