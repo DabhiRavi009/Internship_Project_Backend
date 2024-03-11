@@ -196,6 +196,30 @@ const getServiceProviderByServiceID = async (req, res) => {
   }
 };
 
+const filterService = async (req, res) => {
+  console.log(req.query);
+
+  const service = await ServiceModel.find({
+    Service_Name: { $regex: req.query.Service_Name, $options: "i" },
+  })
+    .populate("category")
+    .populate("sub_category")
+    .populate("type")
+    .populate("service_provider");
+  if (service && service.length > 0) {
+    res.status(200).json({
+      message: "Service Fetched Sucessfully",
+      flag: 1,
+      data: service,
+    });
+  } else {
+    res.status(404).json({
+      message: "No Service found",
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   createService,
   getAllServices,
@@ -204,4 +228,5 @@ module.exports = {
   deleteService,
   fileUpload,
   getServiceProviderByServiceID,
+  filterService,
 };

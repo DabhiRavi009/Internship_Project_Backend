@@ -87,9 +87,9 @@ const updateBookService = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      message: "Server Error",
+      message: error.message,
       flag: -1,
-      data: error,
+      // data: error,
     });
   }
 };

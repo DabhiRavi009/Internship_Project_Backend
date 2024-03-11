@@ -5,7 +5,7 @@ const createUser = async (req, res) => {
   try {
     const hashedPassword = encrypt.encryptPassword(req.body.Password);
     const userObj = {
-      User_Name: req.body.User_Name,
+      Name: req.body.Name,
       Password: hashedPassword,
       Email: req.body.Email,
       Contact: req.body.Contact,
@@ -19,9 +19,9 @@ const createUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: "Server Error",
+      message: error.message,
       flag: -1,
-      data: error,
+      // data: error,
     });
   }
 };
@@ -56,7 +56,7 @@ const loginUser = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      message: "Error in Login User",
+      message: "server Error",
       data: error,
       flag: -1,
     });
