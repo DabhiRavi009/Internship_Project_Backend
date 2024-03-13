@@ -179,7 +179,8 @@ const getServiceProviderByServiceID = async (req, res) => {
     if (service && service.length > 0) {
       res.status(200).json({
         message: "Service Get Successfully",
-        flag: service,
+        flag: 1,
+        data: service,
       });
     } else {
       res.status(400).json({

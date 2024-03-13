@@ -75,7 +75,7 @@ const updateBookService = async (req, res) => {
       newRole
     );
     if (updatebookservice === null) {
-      res.status(400).json({
+      res.status(404).json({
         message: "Book Service not found",
         flag: -1,
       });
