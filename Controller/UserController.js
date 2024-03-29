@@ -1,3 +1,4 @@
+// const UserModel = require("../Model/UserModel");
 const userModel = require("../Model/UserModel");
 const encrypt = require("../Utils/Encrypt");
 
@@ -157,6 +158,57 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const isUser = async (req, res) => {
+  const Email = req.body.Email;
+  try {
+    const getUserByEmail = await userModel.findOne({
+      Email: Email,
+    });
+    if (getUserByEmail) {
+      res.status(200).json({
+        message: "User Found",
+        flag: 1,
+        data: getUserByEmail,
+      });
+    } else {
+      res.status(404).json({
+        message: "User Not Found",
+        flag: -1,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+      flag: -1,
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const Email = req.body.Email;
+  const Password = req.body.Password;
+
+  console.log(Email);
+  console.log(Password);
+
+  const hashedPassword = await encrypt.encryptPassword(Password);
+  try {
+    const updateUser = await userModel.findOneAndUpdate(
+      { Email: Email },
+      { $set: { Password: hashedPassword } }
+    );
+    res.status(200).json({
+      message: "Password updated sucessfully",
+      flag: 1,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error in updating password",
+    });
+  }
+};
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -164,4 +216,6 @@ module.exports = {
   updateUser,
   deleteUser,
   loginUser,
+  isUser,
+  resetPassword,
 };

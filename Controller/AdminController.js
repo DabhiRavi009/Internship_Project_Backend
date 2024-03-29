@@ -1,51 +1,46 @@
-const ServiceProviderModel = require("../Model/ServiceProviderModel");
+const adminModel = require("../Model/AdminModel");
 const encrypt = require("../Utils/Encrypt");
 
-const createServiceProvider = async (req, res) => {
+const createAdmin = async (req, res) => {
   try {
     const hashedPassword = encrypt.encryptPassword(req.body.Password);
-    const serviceProviderObj = {
+    const adminObj = {
       Name: req.body.Name,
-      Email: req.body.Email,
       Password: hashedPassword,
+      Email: req.body.Email,
       Contact: req.body.Contact,
       role: req.body.role,
     };
-    const savedServiceProvider = await ServiceProviderModel.create(
-      serviceProviderObj
-    );
+    const saveAdmin = await adminModel.create(adminObj);
     res.status(200).json({
-      message: "Service provider created",
+      message: "Admin created",
       flag: 1,
-      data: savedServiceProvider,
+      data: saveAdmin,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Server Error",
+      message: error.message,
       flag: -1,
-      data: error,
+      // data: error,
     });
   }
 };
 
-const loginServiceProvider = async (req, res) => {
+const loginAdmin = async (req, res) => {
   try {
     const Email = req.body.Email;
     const Password = req.body.Password;
-    const serviceProviderFromDb = await ServiceProviderModel.findOne({
+    const adminFromDb = await adminModel.findOne({
       Email: Email,
     });
-    if (serviceProviderFromDb != null) {
-      console.log("Service Provider Found");
-      const flag = encrypt.comparePassword(
-        Password,
-        serviceProviderFromDb.Password
-      );
+    if (adminFromDb != null) {
+      console.log("Admin Found");
+      const flag = encrypt.comparePassword(Password, adminFromDb.Password);
       if (flag === true) {
         res.status(200).json({
-          message: "Service Provider Login Successfully...",
+          message: "Admin Login Successfully...",
           flag: 1,
-          data: serviceProviderFromDb,
+          data: adminFromDb,
         });
       } else {
         res.status(404).json({
@@ -55,52 +50,50 @@ const loginServiceProvider = async (req, res) => {
       }
     } else {
       res.status(404).json({
-        message: "Service Provider Not Found",
+        message: "Admin Not Found",
         flag: -1,
       });
     }
   } catch (error) {
-    res.status(404).json({
-      message: "Error in Login Service Provider",
+    res.status(500).json({
+      message: "server Error",
       data: error,
       flag: -1,
     });
   }
 };
 
-const getAllServiceProviders = async (req, res) => {
+const getAllAdmin = async (req, res) => {
   try {
-    const serviceProviders = await ServiceProviderModel.find().populate("role");
+    const admins = await adminModel.find().populate("role");
     res.status(200).json({
-      message: "Service Providers featched",
+      message: "Admins featched",
       flag: 1,
-      data: serviceProviders,
+      data: admins,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Server Error",
+      message: "server error",
       flag: -1,
       data: error,
     });
   }
 };
 
-const getServiceProviderById = async (req, res) => {
+const getAdminById = async (req, res) => {
   const id = req.params.id;
   try {
-    const serviceProvider = await ServiceProviderModel.findById(id).populate(
-      "role"
-    );
-    if (serviceProvider === null) {
+    const admin = await adminModel.findById(id).populate("role");
+    if (admin === null) {
       res.status(404).json({
-        message: "Service Provider not Found",
+        message: "Admin not Found",
         flag: -1,
       });
     } else {
       res.status(200).json({
-        message: "Service Provider Featched",
+        message: "Admin Featched",
         flag: 1,
-        data: serviceProvider,
+        data: admin,
       });
     }
   } catch (error) {
@@ -112,23 +105,19 @@ const getServiceProviderById = async (req, res) => {
   }
 };
 
-const updateServiceProvider = async (req, res) => {
+const updateAdmin = async (req, res) => {
   const id = req.params.id;
   const newRole = req.body;
-
   try {
-    const updateserviceprovider = await ServiceProviderModel.findByIdAndUpdate(
-      id,
-      newRole
-    );
-    if (updateserviceprovider === null) {
+    const updateAdmin = await adminModel.findByIdAndUpdate(id, newRole);
+    if (updateAdmin === null) {
       res.status(400).json({
-        message: "Service Provider not found",
+        message: "Admin not found",
         flag: -1,
       });
     } else {
       res.status(200).json({
-        message: "Service Provider Updated Successfully...",
+        message: "Admin Updated Successfully...",
         flag: 1,
       });
     }
@@ -141,23 +130,20 @@ const updateServiceProvider = async (req, res) => {
   }
 };
 
-const deleteServiceProvider = async (req, res) => {
+const deleteAdmin = async (req, res) => {
   const id = req.params.id;
-
   try {
-    const deleteserviceprovider = await ServiceProviderModel.findByIdAndDelete(
-      id
-    );
-    if (deleteserviceprovider === null) {
+    const deleteAdmin = await adminModel.findByIdAndDelete(id);
+    if (deleteAdmin === null) {
       res.status(404).json({
-        message: "Service Provider not Found",
+        message: "Admin not Found",
         flag: -1,
       });
     } else {
       res.status(200).json({
-        message: "Service Provider Deleted Successfully",
+        message: "Admin Deleted Successfully",
         flag: 1,
-        data: deleteserviceprovider,
+        data: deleteAdmin,
       });
     }
   } catch (error) {
@@ -169,21 +155,21 @@ const deleteServiceProvider = async (req, res) => {
   }
 };
 
-const isServiceProvider = async (req, res) => {
+const isAdmin = async (req, res) => {
   const Email = req.body.Email;
   try {
-    const getServiceProviderByEmail = await ServiceProviderModel.findOne({
+    const getAdminByEmail = await AdminModel.findOne({
       Email: Email,
     });
-    if (getServiceProviderByEmail) {
+    if (getAdminByEmail) {
       res.status(200).json({
-        message: "Service Provider Found",
+        message: "Admin Found",
         flag: 1,
-        data: getServiceProviderByEmail,
+        data: getAdminByEmail,
       });
     } else {
       res.status(404).json({
-        message: "Service Provider Not Found",
+        message: "Admin Not Found",
         flag: -1,
       });
     }
@@ -204,7 +190,7 @@ const resetPassword = async (req, res) => {
 
   const hashedPassword = await encrypt.encryptPassword(Password);
   try {
-    const updateServiceProvider = await ServiceProviderModel.findOneAndUpdate(
+    const updateAdmin = await AdminModel.findOneAndUpdate(
       { Email: Email },
       { $set: { Password: hashedPassword } }
     );
@@ -220,12 +206,12 @@ const resetPassword = async (req, res) => {
   }
 };
 module.exports = {
-  createServiceProvider,
-  getAllServiceProviders,
-  getServiceProviderById,
-  updateServiceProvider,
-  deleteServiceProvider,
-  loginServiceProvider,
-  isServiceProvider,
+  createAdmin,
+  getAllAdmin,
+  getAdminById,
+  updateAdmin,
+  deleteAdmin,
+  loginAdmin,
+  isAdmin,
   resetPassword,
 };

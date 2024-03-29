@@ -25,4 +25,12 @@ router.post(
   "/serviceprovider/login",
   ServiceProviderController.loginServiceProvider
 );
+router.post(
+  "/serviceprovider/isserviceproviderexist",
+  ServiceProviderController.isServiceProvider
+);
+router.post(
+  "/serviceprovider/resetpassword",
+  ServiceProviderController.resetPassword
+);
 module.exports = router;

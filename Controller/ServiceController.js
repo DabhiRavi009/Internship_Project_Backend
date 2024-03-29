@@ -2,6 +2,7 @@ const ServiceModel = require("../Model/ServiceModel");
 const multer = require("multer");
 const path = require("path");
 const cloudinaryController = require("./CloudinaryController");
+// const mailUtil = require("../Utils/Mail");
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
@@ -17,38 +18,50 @@ const upload = multer({
 }).single("myImage");
 
 const fileUpload = (req, res) => {
-  upload(req, res, async (err) => {
-    if (err) {
-      res.status(500).json({
-        message: "Error in File Handling",
-      });
-    } else {
-      if (req.file === undefined) {
-        res.status(400).json({
-          message: "No File is Selected",
+  try {
+    upload(req, res, async (err) => {
+      if (err) {
+        res.status(500).json({
+          message: "Error in File Handling",
         });
       } else {
-        const result = await cloudinaryController.uploadImage(req.file.path);
-        const serviceObj = {
-          Service_Name: req.body.Service_Name,
-          category: req.body.category,
-          sub_category: req.body.sub_category,
-          type: req.body.type,
-          Fees: req.body.Fees,
-          Area: req.body.Area,
-          City: req.body.City,
-          State: req.body.State,
-          service_provider: req.body.service_provider,
-          imageUrl: result.secure_url,
-        };
-        const savedService = await ServiceModel.create(serviceObj);
-        res.status(200).json({
-          message: "File Uploaded",
-          data: savedService,
-        });
+        if (req.file === undefined) {
+          res.status(400).json({
+            message: "No File is Selected",
+          });
+        } else {
+          const result = await cloudinaryController.uploadImage(req.file.path);
+          const serviceObj = {
+            Service_Name: req.body.Service_Name,
+            category: req.body.category,
+            sub_category: req.body.sub_category,
+            type: req.body.type,
+            Fees: req.body.Fees,
+            Area: req.body.Area,
+            City: req.body.City,
+            State: req.body.State,
+            service_provider: req.body.service_provider,
+            imageUrl: result.secure_url,
+          };
+          const savedService = await ServiceModel.create(serviceObj);
+          // const mailRes = await mailUtil.mailSend(
+          //   savedService.email,
+          //   "About Service Book mail",
+          //   "Your service is Post"
+          // );
+          res.status(200).json({
+            message: "File Uploaded",
+            data: savedService,
+          });
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+      flag: -1,
+    });
+  }
 };
 
 const createService = async (req, res) => {
@@ -175,7 +188,11 @@ const getServiceProviderByServiceID = async (req, res) => {
   try {
     const service = await ServiceModel.find({
       service_provider: serviceProviderId,
-    }).populate("service_provider");
+    })
+      .populate("service_provider")
+      .populate("category")
+      .populate("sub_category")
+      .populate("type");
     if (service && service.length > 0) {
       res.status(200).json({
         message: "Service Get Successfully",
