@@ -1,3 +1,4 @@
+const BookModel = require("../Model/BookModel");
 const BookServiceModel = require("../Model/BookModel");
 const mailer = require("../Utils/Mail");
 
@@ -11,9 +12,9 @@ const createBookService = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: "Server Error",
+      message: error.message,
       flag: -1,
-      data: error,
+      // data: error,
     });
   }
 };
@@ -29,6 +30,36 @@ const getAllBookService = async (req, res) => {
       flag: 1,
       data: bookService,
     });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error",
+      flag: -1,
+      data: error,
+    });
+  }
+};
+
+const getDonePaymentById = async (req, res) => {
+  try {
+    const bookservice = await BookServiceModel.find({
+      Status: "Done",
+      user: req.params.id,
+    })
+      .populate("ServiceId")
+      .populate("service_provider")
+      .populate("user");
+    if (bookservice === null) {
+      res.status(404).json({
+        message: "Book Service not Found",
+        flag: -1,
+      });
+    } else {
+      res.status(200).json({
+        message: "Book Service Fetched",
+        flag: 1,
+        data: bookservice,
+      });
+    }
   } catch (error) {
     res.status(500).json({
       message: "Server Error",
@@ -71,26 +102,45 @@ const updateBookService = async (req, res) => {
   const newRole = req.body;
 
   try {
-    const updatebookservice = await BookServiceModel.findByIdAndUpdate(
+    let updatebookservice = await BookServiceModel.findByIdAndUpdate(
       id,
-      newRole
-    );
-    if (updatebookservice === null) {
-      res.status(404).json({
+      newRole,
+      { new: true } // Set to true to return the updated document
+    )
+      .populate("ServiceId")
+      .populate("service_provider")
+      .populate("user");
+    console.log(updatebookservice);
+    if (!updatebookservice) {
+      return res.status(404).json({
         message: "Book Service not found",
         flag: -1,
       });
-    } else {
-      res.status(200).json({
-        message: "Book Service Updated Successfully...",
-        flag: 1,
+    }
+
+    // Check if user field exists before accessing its properties
+    if (!updatebookservice.user || !updatebookservice.user.Email) {
+      return res.status(500).json({
+        message: "User details not available",
+        flag: -1,
       });
     }
+
+    const mailRes = await mailer.mailSend(
+      updatebookservice.user.Email, // Fix the property name to 'Email' (capital 'E')
+      "Payment Done",
+      "Dear user, your service has been successfully booked."
+    );
+    console.log(mailRes);
+
+    res.status(200).json({
+      message: "Book Service Updated Successfully...",
+      flag: 1,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
       flag: -1,
-      // data: error,
     });
   }
 };
@@ -99,7 +149,10 @@ const deleteBookService = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const deletebookservice = await BookServiceModel.findByIdAndDelete(id);
+    const deletebookservice = await BookServiceModel.findByIdAndDelete(id)
+      .populate("ServiceId")
+      .populate("service_provider")
+      .populate("user");
     if (deletebookservice === null) {
       res.status(404).json({
         message: "Book Service not Found",
@@ -121,10 +174,73 @@ const deleteBookService = async (req, res) => {
   }
 };
 
+const getPendingPaymentById = async (req, res) => {
+  try {
+    const bookservice = await BookServiceModel.find({
+      Status: "pending",
+      user: req.params.id,
+    })
+      .populate("ServiceId")
+      .populate("service_provider")
+      .populate("user");
+    if (bookservice === null) {
+      res.status(404).json({
+        message: "Book Service not Found",
+        flag: -1,
+      });
+    } else {
+      res.status(200).json({
+        message: "Book Service Fetched",
+        flag: 1,
+        data: bookservice,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error",
+      flag: -1,
+      data: error,
+    });
+  }
+};
+
+const getDonePaymentBySPId = async (req, res) => {
+  try {
+    const bookservice = await BookServiceModel.find({
+      Status: "Done",
+      service_provider: req.params.id,
+    })
+      .populate("ServiceId")
+      .populate("service_provider")
+      .populate("user");
+    if (bookservice === null) {
+      res.status(404).json({
+        message: "Book Service not Found",
+        flag: -1,
+      });
+    } else {
+      res.status(200).json({
+        message: "Book Service Fetched",
+        flag: 1,
+        data: bookservice,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error",
+      flag: -1,
+      data: error,
+    });
+  }
+};
+
 module.exports = {
   createBookService,
   getAllBookService,
   updateBookService,
   deleteBookService,
   getBookServiceById,
+  getDonePaymentById,
+  getPendingPaymentById,
+  getDonePaymentBySPId,
 };

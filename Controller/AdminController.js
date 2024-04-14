@@ -158,7 +158,7 @@ const deleteAdmin = async (req, res) => {
 const isAdmin = async (req, res) => {
   const Email = req.body.Email;
   try {
-    const getAdminByEmail = await AdminModel.findOne({
+    const getAdminByEmail = await adminModel.findOne({
       Email: Email,
     });
     if (getAdminByEmail) {
@@ -190,7 +190,7 @@ const resetPassword = async (req, res) => {
 
   const hashedPassword = await encrypt.encryptPassword(Password);
   try {
-    const updateAdmin = await AdminModel.findOneAndUpdate(
+    const updateAdmin = await adminModel.findOneAndUpdate(
       { Email: Email },
       { $set: { Password: hashedPassword } }
     );
