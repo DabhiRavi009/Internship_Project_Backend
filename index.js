@@ -30,7 +30,6 @@ app.use("/bookservices", BookServiceRoutes);
 app.use("/admins", adminRoutes);
 
 mongoose
-  // .connect("mongodb://127.0.0.1:27017/internship_localservice")
   .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("Mongodb Connected Sucessfully..");
