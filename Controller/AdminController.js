@@ -13,7 +13,7 @@ const createAdmin = async (req, res) => {
     };
     const saveAdmin = await adminModel.create(adminObj);
     res.status(200).json({
-      message: "Admin created",
+      message: "Admin created Succesfully..",
       flag: 1,
       data: saveAdmin,
     });
