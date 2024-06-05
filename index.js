@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT;
+const PORT = 1000;
 
 const RoleRoutes = require("./Routes/RoleRoutes");
 const userRoutes = require("./Routes/UserRoutes");
