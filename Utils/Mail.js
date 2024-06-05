@@ -24,7 +24,7 @@ const mailSend = async (to, subject, text) => {
     return res;
   } catch (error) {
     console.error("Error sending email:", error);
-    throw error; 
+    throw error;
   }
 };
 // mailSend("dabhiravi3636@gmail.com", "hello", "fine");

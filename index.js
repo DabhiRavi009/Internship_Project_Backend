@@ -1,11 +1,12 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const PORT = 1000;
-
 app.use(cors());
 app.use(express.json());
+
+const PORT = process.env.port;
 
 const RoleRoutes = require("./Routes/RoleRoutes");
 const userRoutes = require("./Routes/UserRoutes");
@@ -29,7 +30,8 @@ app.use("/bookservices", BookServiceRoutes);
 app.use("/admins", adminRoutes);
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/internship_localservice")
+  // .connect("mongodb://127.0.0.1:27017/internship_localservice")
+  .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("Mongodb Connected Sucessfully..");
   })
