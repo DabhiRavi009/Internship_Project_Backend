@@ -12,9 +12,6 @@ const comparePassword = (password, hash) => {
   return flag;
 };
 
-// var hashed = encryptPassword("1234567");
-// console.log(hashed);
-
 module.exports = {
   encryptPassword,
   comparePassword,

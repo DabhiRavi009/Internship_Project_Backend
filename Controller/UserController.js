@@ -1,4 +1,3 @@
-// const UserModel = require("../Model/UserModel");
 const userModel = require("../Model/UserModel");
 const encrypt = require("../Utils/Encrypt");
 
@@ -22,7 +21,6 @@ const createUser = async (req, res) => {
     res.status(500).json({
       message: error.message,
       flag: -1,
-      // data: error,
     });
   }
 };

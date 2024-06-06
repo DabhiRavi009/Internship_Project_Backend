@@ -27,7 +27,6 @@ const mailSend = async (to, subject, text) => {
     throw error;
   }
 };
-// mailSend("dabhiravi3636@gmail.com", "hello", "fine");
 
 module.exports = {
   mailSend,

@@ -21,7 +21,6 @@ const createAdmin = async (req, res) => {
     res.status(500).json({
       message: error.message,
       flag: -1,
-      // data: error,
     });
   }
 };

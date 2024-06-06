@@ -2,7 +2,6 @@ const ServiceModel = require("../Model/ServiceModel");
 const multer = require("multer");
 const path = require("path");
 const cloudinaryController = require("./CloudinaryController");
-// const mailUtil = require("../Utils/Mail");
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
@@ -44,11 +43,6 @@ const fileUpload = (req, res) => {
             imageUrl: result.secure_url,
           };
           const savedService = await ServiceModel.create(serviceObj);
-          // const mailRes = await mailUtil.mailSend(
-          //   savedService.email,
-          //   "About Service Book mail",
-          //   "Your service is Post"
-          // );
           res.status(200).json({
             message: "File Uploaded",
             data: savedService,

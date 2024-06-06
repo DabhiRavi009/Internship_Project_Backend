@@ -14,7 +14,6 @@ const createBookService = async (req, res) => {
     res.status(500).json({
       message: error.message,
       flag: -1,
-      // data: error,
     });
   }
 };
@@ -105,7 +104,7 @@ const updateBookService = async (req, res) => {
     let updatebookservice = await BookServiceModel.findByIdAndUpdate(
       id,
       newRole,
-      { new: true } // Set to true to return the updated document
+      { new: true }
     )
       .populate("ServiceId")
       .populate("service_provider")
@@ -118,7 +117,6 @@ const updateBookService = async (req, res) => {
       });
     }
 
-    // Check if user field exists before accessing its properties
     if (!updatebookservice.user || !updatebookservice.user.Email) {
       return res.status(500).json({
         message: "User details not available",
@@ -127,7 +125,7 @@ const updateBookService = async (req, res) => {
     }
 
     const mailRes = await mailer.mailSend(
-      updatebookservice.user.Email, // Fix the property name to 'Email' (capital 'E')
+      updatebookservice.user.Email,
       "Payment Done",
       "Dear user, your service has been successfully booked."
     );
